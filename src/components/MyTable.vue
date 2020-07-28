@@ -1,134 +1,83 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col>
-        <div v-text="customText"></div>
-        <v-btn small color="primary" @click="onClick">click me</v-btn>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col class="text-no-wrap">Sorting by: 
+  <div>
+    <div class="d-flex align-center">
+        <span class="text-no-wrap">
+          Sorting by: 
+        </span>
 
-        <v-btn-toggle tile group dense v-model="sortField" color="white">
-          <v-btn v-for="name in headerNames" :value="name" :key="name"
-           color="green" outlined>{{name}}</v-btn>
+        <v-btn-toggle id="sorter" tile group dense :value="firstField" @change="onFirstFieldChanged" mandatory
+          borderless
+          >
+          <v-btn v-for="name in headerNamesAvail" :value="name" :key="name"
+           class="my-0"
+           style="text-transform: capitalize">{{name}}</v-btn>
         </v-btn-toggle>
+        
+        <v-btn
+          id="idcBtnDel"
+         @click="onDeleteAllClick($event)" 
+         :disabled="! hasRowsSelected"
+         class=" myPagerBorder my-0 py-0 mr-2 ml-auto idcBtnDel" 
+         :class="{active: hasRowsSelected}"
+         outlined borderless
+         style="text-transform: capitalize"
+         >delete {{selectedRows.length ? `(${selectedRows.length})` : ''}}</v-btn>
 
-      </v-col>
-      <v-col><v-btn color="success" @click="onDeleteAllClick($event)" :disabled="! (selectedRows.length > 0)">delete</v-btn></v-col>
-      <v-col class="text-no-wrap">Per page:</v-col>
-      <v-col>
+        <Pager :pplist="pplist" :pp="itemsPerPage" @ppchange="itemsPerPage = $event"
+        :canGoPrev="canGoPrev" :canGoNext="canGoNext" :paginationData="paginationData"
+        @nav="onNav" />
 
-        <!-- <v-combobox class=" myPagerBorder my-0 py-0" style="border: none"
-         hide-details dense outlined :items="pagerui.combo.items" v-model="itemsPerPage" color="primary"/> -->
-        <v-select
-         :items="pagerui.combo.items" v-model="itemsPerPage" 
-         hide-details dense outlined color="primary"
-         class=" myPagerBorder my-0 py-0" />
-         
-      </v-col>
-      <v-col class="text-no-wrap"> 
-        <v-btn :disabled="!canGoPrev" @click="nav(-1)" icon class="mx-2 myPagerBorder" light color="primary" outlined><v-icon>mdi-chevron-left</v-icon></v-btn>
-        {{paginationData.pageStart+1}} - {{paginationData.pageStop}} of {{paginationData.itemsLength}}
-        <v-btn :disabled="!canGoNext" @click="nav(1)" icon class="mx-2 myPagerBorder" light color="primary" outlined><v-icon>mdi-chevron-right</v-icon></v-btn>
-      </v-col>
-     </v-row>
-     <v-row>
-      <v-col>
+        <ColumnSelector :names="headerNames" :namesSelected="headerNamesSelected"
+          @change="onHeadersChanged"/>
+    </div>
 
-        <v-select
-         :items="headerNames" v-model="headerNamesSelected" multiple
-          hide-details dense outlined
-          :menu-props="{offsetY: true}"
-          item-color="success"
-          class=" myPagerBorder my-0 py-0"
-          @change="onHeadersChanged">
-            <template #prepend-item>
-              <v-list-item ripple @click="toggleAll">
-                <v-list-item-action>
-                   <v-icon :color="headerNamesSelected.length > 0 ? 'indigo darken-4' : ''">{{ icon }}</v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                  <v-list-item-title>Select All</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-              <v-divider class="mt-2"></v-divider>
-            </template>
-            <template #selection="{ index }">
-              <span v-if="index === 0"
-                class="grey--text"
-              >{{ headerNamesSelected.length }} columns selected</span> 
-            </template>
-        </v-select>
 
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <v-data-table ref="myTable"
-          :headers="tableHeaders" :items="tableItems" :items-per-page="t_itemsPerPage" :page="t_page"
-          @update:items-per-page="itemsPerPage=$event"
-          :footer-propsOFF="{itemsPerPageOptions: [1,2,3,5,10,-1]}"
-          hide-default-footer
-          @pagination="onPagination"
-          :sort-by.sync="sortField"
-          show-select
-          v-model="selectedRows"
-          v-on:cancelclicked="console.log('a')"
-         >
+    <v-data-table
+      id="theTable"
+      ref="myTable"
+      :headers="tableHeaders" :items="tableItems" :items-per-page="t_itemsPerPage" :page="t_page"
+      @update:items-per-page="itemsPerPage=$event"
+      :footer-propsOFF="{itemsPerPageOptions: [1,2,3,5,10,-1]}"
+      hide-default-footer
+      @pagination="onPagination"
+      :sort-by.sync="sortField"
+      show-select
+      v-model="selectedRows"
+      @click:row="onRowClick"
+      >
 
-          <template #item.name="props">
-            {{props.value}} (ID:{{props.item.id}})
-          </template>
+      <template #item.name="props">
+        {{props.value}} (ID:{{props.item.id}})
+      </template>
 
-          <template #item.actions="{ item }">
+      <template #item.actions="{ item }">
 
-            <!-- <v-menu
-                :close-on-content-click="false"
-                :nudge-width="200"
-                offset-y
-                >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn
-                      v-bind="attrs"
-                      v-on="on"
-                      text small class="text-lowercase"
-                    >
-                    <v-icon>
-                      mdi-trash-can-outline
-                    </v-icon>
-                    delete
-                  </v-btn>
+        <v-btn
+          @click.stop="onDeleteClick($event, item)"
+            text small class="text-lowercase"
+          >
+          <v-icon>
+            mdi-trash-can-outline
+          </v-icon>
+          delete
+        </v-btn>
 
-                </template>            
+      </template>
 
-                Are you sure?
-                <v-btn @click="onPopoverCancel()"
-                    text-capitalize outlined
-                >
-                  Cancel</v-btn>
-                <v-btn 
-                  @click="onPopoverDelete()"
-                  text-capitalize color="success"
-                >
-                  Confirm
-                </v-btn>
-            </v-menu> -->
-            <v-btn
-              @click="onDeleteClick($event, item)"
-                text small class="text-lowercase"
-              >
-              <v-icon>
-                mdi-trash-can-outline
-              </v-icon>
-              delete
-            </v-btn>
+      <template #item.data-table-select="all">
+        <v-icon :color="all.isSelected ? 'green' : ''">
+          {{ all.isSelected ? 'mdi-checkbox-marked' : 'mdi-checkbox-blank-outline'}}
+        </v-icon>
+      </template>
 
-          </template>
+      <template #header.data-table-select="all">
+        <v-icon :color="all.props.value || all.props.indeterminate ? 'green' : ''"
+          @click="all.on.input(! all.props.value)">
+          {{ all.props.indeterminate ? 'mdi-minus-box': (all.props.value ? 'mdi-checkbox-marked' : 'mdi-checkbox-blank-outline') }}
+        </v-icon>
+      </template>
 
-        </v-data-table>
-      </v-col>
-    </v-row>
+    </v-data-table>
 
     
     <v-menu
@@ -144,53 +93,46 @@
         class="px-2 bg-white"
         >
 
-    <v-card>
+     <v-card>
         <v-card-text class="text-center">
           <div class="mb-2 text-subtitle-2">Are you sure you want to <b>delete the item</b>?</div>
           <div>
-            <v-btn small @click="onPopoverCancel()" class="mr-5 text-capitalize"
-                 outlined
-            >
-              Cancel</v-btn>
-            <v-btn small
-              @click="onPopoverDelete()"
-              color="success text-capitalize"
-            >
-              Confirm
-            </v-btn>
+            <v-btn @click="onPopoverCancel()"
+              small class="mr-5 text-capitalize"
+              style="border-color: #bbb"
+              outlined
+            >Cancel</v-btn>
+
+            <v-btn @click="onPopoverDelete()"
+              small color="success text-capitalize"
+              
+              elevation=0
+            >Confirm</v-btn>
           </div>
         </v-card-text>
       </v-card>
 
     </v-menu>
 
-  </v-container>
+  </div>
 </template>
 
 <script>
-  const ucfirst = function (string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
+  import Utils from '@/utils';
 
-
-  let strings = ['string A','string B','string C'];
-  strings.cur =  0;
-
-  const rotate = function () {
-    if ( strings.cur >= strings.length) strings.cur = 0;
-    return strings[strings.cur++];
-  }
-
-  let headerNames = 'id,name,pos,actions';
+  
+  let headerNames = 'id,name,pos';
   (function initHeaderNames() {
     headerNames = headerNames.split(',')
   })();
-  const getTableHeaders = function (names) {
+  const makeTableHeaders = function (names) {
     let hs = [];
 
-    (names || headerNames).forEach((name) => {
-      hs.push({text: ucfirst(name), value: name})
+    (names || headerNames).forEach((name, i) => {
+      hs.push({text: Utils.ucfirst(name), value: name, sortable: i == 0})
     });
+    
+    hs.push({text : '', value: 'actions', sortable: false })
 
     return hs;
   }
@@ -221,13 +163,20 @@
     return r;
   }
 
+  
+  import ColumnSelector from './ColumnSelector';
+  import Pager          from './Pager';
+
   export default {
     name: 'MyTable',
 
-    data: () => ({
-      customText: 'initial text',
+    components:{
+      ColumnSelector,
+      Pager
+    },
 
-      tableHeaders: getTableHeaders(),
+    data: () => ({
+      tableHeaders: makeTableHeaders(),
       tableItems: genTableItems(),
       itemsPerPage : 3,
       page: 1,
@@ -235,7 +184,10 @@
       canGoNext: true,
       canGoPrev: true,
       headerNames,
+      headerNamesSelected: headerNames,
+      headerNamesAvail: headerNames,
       sortField: headerNames[0],
+      firstField: headerNames[0],
       console,
       selectedRows: [],
 
@@ -244,16 +196,8 @@
       popoverX: 0,
       popoverY: 0,
 
-      headerNamesSelected: headerNames,
 
-      pagerui: {
-        combo:{
-          items: [{header: 'choose one:'}, 1,3,5,10,15, {text: 'All', value: -1}]
-        },
-        nav: {
-
-        }
-      }
+      pplist: [1,3,5,10,15, {text: 'All', value: -1}]
     }),
     watch: {
       sortField: function (v, old) {
@@ -272,24 +216,11 @@
     computed: {
       t_itemsPerPage () { return this.itemsPerPage},
       t_page () { return this.page},
-      headersSelectedAll () {
-        return this.headerNamesSelected.length === this.headerNames.length
-      },
-      headersSelected () {
-        return this.headerNamesSelected.length > 0
-      },      
-      icon () {
-        if (this.headersSelectedAll) return 'mdi-close-box'
-        if (this.headersSelected) return 'mdi-plus-box'
-        return 'mdi-checkbox-blank-outline'
-      },      
+      hasRowsSelected() { return (this.selectedRows.length > 0)} 
     },
 
     methods: {
-      onClick () {
-        this.customText = rotate()
-      },
-      nav (direction) {
+      onNav (direction) {
         // console.log(this.$refs.myTable)
         this.page = this.page + direction
       },
@@ -298,34 +229,43 @@
         this.canGoPrev = data.page > 1;
         this.canGoNext = data.page < data.pageCount;
       },
-      toggleAll() {
-        this.$nextTick(() => {
-          if (this.headersSelectedAll) {
-            this.headerNamesSelected = []
-          } else {
-            this.headerNamesSelected = this.headerNames.slice()
-          }
 
-          this.onHeadersChanged(this.headerNamesSelected);
-        })
-      },
       onHeadersChanged (selected) {
-        let newa = this.headerNames.filter((v) => { return selected.indexOf(v) !== -1 });
-        this.tableHeaders = getTableHeaders(newa)
+        console.log(`onHeadersChanged (${selected}) `);
+        this.headerNamesSelected = selected; // bulk values
+        this.headerNamesAvail = this.headerNames.filter((v) => { return selected.indexOf(v) !== -1 }); // values in original order
+        this.firstField = this.headerNamesAvail[0];
+console.log(`this.firstField (${this.firstField}) `);
+        this.tableHeaders = makeTableHeaders(this.headerNamesAvail)
       },
-      deleteItems (items){
-        // console.log(items)
+      onFirstFieldChanged (first){
+        this.firstField= first
+        console.log(`onFirstFieldChanged (${first})`);
+        if (! first) return;  // skip undefined value on unselect
 
-        items.forEach((v) => {
-          let index;
-          if ((index = this.tableItems.indexOf(v)) !== -1) this.tableItems.splice(index, 1)
-          console.log(v.name, index);
+        // Re-order
+        let names = this.headerNamesAvail.filter((v) => { return v != first});
+        names.unshift(first);
+
+        this.tableHeaders = makeTableHeaders(names)
+      },
+
+      deleteItem (where, what) {
+        let index;
+        if ((index = where.indexOf(what)) !== -1) where.splice(index, 1)
+      },
+      deleteRows (rows){
+        rows.forEach((row) => {
+          this.deleteItem(this.tableItems, row);   // from table
+          this.deleteItem(this.selectedRows, row); // from selection
         })
+
+        console.log('selected rows after delete:', this.selectedRows);
 
         return true
       },
       onDeleteAllClick() {
-        if (this.deleteItems(this.selectedRows)) this.selectedRows = [];
+        if (this.deleteRows(this.selectedRows)) this.selectedRows = [];
       },
       onDeleteClick (evt, item){
         // if (this.deleteItems(this.selectedRows)) this.selectedRows = [];
@@ -350,6 +290,10 @@
           this.popoverShow = true;
         })
       },
+      onRowClick (item, row){
+        row.select(!row.isSelected);
+      },
+
       popoverClose() {
         this.popoverShow = false;
         this.popoverItem = null;
@@ -360,9 +304,10 @@
       },
       onPopoverDelete (){
         console.log('delete');
-        if (this.popoverItem) this.deleteItems([this.popoverItem])
+        if (this.popoverItem) this.deleteRows([this.popoverItem])
         this.popoverClose()
       }
+
     },
     
     mounted () {
@@ -372,9 +317,64 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style>
+/* @import '~vuetify/src/styles/styles.sass' */
 
-#myBtnLeft, .myPagerBorder {
- border-radius: 0;
+#sorter .v-btn--active
+{
+  background-color: green !important;
+  color: white !important;
+}
+ 
+#idcBtnDel.active
+{
+  background-color: green;
+  color: white !important;
+  border: 1px solid green
+}
+
+#theTable > .v-data-table__wrapper > table > tbody > tr
+ > td:last-child button {
+    opacity: 0;
+ }
+ 
+#theTable > .v-data-table__wrapper > table > tbody > tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper)
+ > td:last-child button {
+    opacity: 1;
+ }
+
+#theTable > .v-data-table__wrapper > table > tbody > tr.v-data-table__selected
+{
+  background-color: transparent;
+}
+#theTable > .v-data-table__wrapper > table > tbody > tr:nth-of-type(even)
+{
+  background-color: rgba(0, 0, 0, .03);
+}
+#theTable > .v-data-table__wrapper > table > tbody > tr:hover
+{
+  background-color: rgba(237, 248, 239);
+  cursor: pointer;
+}
+#theTable > .v-data-table__wrapper > table > tbody > tr:hover
+> td:nth-child(2)
+{
+  font-weight: bold;
+}
+
+
+#theTable > .v-data-table__wrapper > table > tbody > tr:not(:last-child) > td:not(.v-data-table__mobile-row), .theme--light.v-data-table > .v-data-table__wrapper > table > tbody > tr:not(:last-child) > th:not(.v-data-table__mobile-row)
+{
+  border: none;
+}
+
+#theTable .v-data-table-header th.sortable.active
+{
+  color: green;
+}
+
+#theTable > .v-data-table__wrapper > table > thead > tr > th
+{
+  color: #333;
 }
 </style>
