@@ -1,18 +1,8 @@
 <template>
   <div>
     <div class="d-flex align-center">
-        <span class="text-no-wrap">
-          Sorting by: 
-        </span>
+        <Sorter :value="firstField" :list="headerNamesAvail" @change="onFirstFieldChanged" />
 
-        <v-btn-toggle id="sorter" tile group dense :value="firstField" @change="onFirstFieldChanged" mandatory
-          borderless
-          >
-          <v-btn v-for="name in headerNamesAvail" :value="name" :key="name"
-           class="my-0"
-           style="text-transform: capitalize">{{name}}</v-btn>
-        </v-btn-toggle>
-        
         <v-btn
           id="idcBtnDel"
          @click="onDeleteAllClick($event)" 
@@ -166,13 +156,15 @@
   
   import ColumnSelector from './ColumnSelector';
   import Pager          from './Pager';
+  import Sorter         from './Sorter';
 
   export default {
     name: 'MyTable',
 
     components:{
       ColumnSelector,
-      Pager
+      Pager,
+      Sorter
     },
 
     data: () => ({
@@ -318,13 +310,6 @@ console.log(`this.firstField (${this.firstField}) `);
 </script>
 
 <style>
-/* @import '~vuetify/src/styles/styles.sass' */
-
-#sorter .v-btn--active
-{
-  background-color: green !important;
-  color: white !important;
-}
  
 #idcBtnDel.active
 {
