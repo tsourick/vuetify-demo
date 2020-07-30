@@ -62,40 +62,9 @@
     </v-data-table>
 
     
-    <v-menu
-        :close-on-content-click="false"
-        :close-on-click="true"
-        absolute
-        z-index="9999999"
-        :position-x="popoverX"
-        :position-y="popoverY"
-        ref="popover"
-        v-model="popoverShow"
-        
-        class="px-2 bg-white"
-        >
-
-     <v-card>
-        <v-card-text class="text-center">
-          <div class="mb-2 text-subtitle-2">Are you sure you want to <b>delete the item</b>?</div>
-          <div>
-            <v-btn @click="onPopoverCancel()"
-              small class="mr-5 text-capitalize"
-              style="border-color: #bbb"
-              outlined
-            >Cancel</v-btn>
-
-            <v-btn @click="onPopoverDelete()"
-              small color="success text-capitalize"
-              
-              elevation=0
-            >Confirm</v-btn>
-          </div>
-        </v-card-text>
-      </v-card>
-
-    </v-menu>
-
+    <Popover v-model="popoverShow" @confirmed="onPopoverDelete"
+      :x="popoverX" :y="popoverY"
+      />
   </div>
 </template>
 
@@ -150,6 +119,7 @@
   import Pager          from './components/TablePager';
   import Sorter         from './components/TableSorter';
   import DeleteButton   from './components/TableDeleteButton';
+  import Popover        from './components/TablePopover';
 
   export default {
     name: 'Table',
@@ -158,7 +128,8 @@
       ColumnSelector,
       Pager,
       Sorter,
-      DeleteButton
+      DeleteButton,
+      Popover
     },
 
     data: () => ({
@@ -259,19 +230,9 @@
       onRowClick (item, row){
         row.select(!row.isSelected);
       },
-
-      popoverClose() {
-        this.popoverShow = false;
-        this.popoverItem = null;
-      },
-      onPopoverCancel (){
-        // console.log('cancel');
-        this.popoverClose()
-      },
       onPopoverDelete (){
         // console.log('delete');
         if (this.popoverItem) this.deleteRows([this.popoverItem])
-        this.popoverClose()
       }
 
     },
