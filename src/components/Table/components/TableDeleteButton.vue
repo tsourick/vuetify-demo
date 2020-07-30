@@ -11,13 +11,13 @@
 </template>
 
 <script>
-export default {
-  name: 'TableDeleteButton',
-  props: ['selectedRows'],
-  computed: {
-      hasRowsSelected() { return (this.selectedRows.length > 0)} 
+  export default {
+    name: 'TableDeleteButton',
+    props: ['selectedRows'],
+    computed: {
+        hasRowsSelected() { return (this.selectedRows.length > 0)} 
+    }
   }
-}
 </script>
 
 <style>
