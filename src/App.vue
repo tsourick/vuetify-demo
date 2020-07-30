@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import MyTable  from './components/MyTable';
+import MyTable  from './components/Table/MyTable';
 import AppBar   from './components/AppBar';
 
 export default {
