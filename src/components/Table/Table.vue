@@ -133,28 +133,28 @@
     },
 
     data: () => ({
-      tableHeaders: makeTableHeaders(),
-      tableItems: genTableItems(),
-      itemsPerPage : 3,
-      page: 1,
-      paginationData: {},
-      canGoNext: true,
-      canGoPrev: true,
       headerNames,
       headerNamesSelected: headerNames,
       headerNamesAvail: headerNames,
       sortField: headerNames[0],
       firstField: headerNames[0],
-      console,
+
+      tableHeaders: makeTableHeaders(),
+      tableItems: genTableItems(),
       selectedRows: [],
 
-      popoverAttach: undefined,
+      itemsPerPage : 3,
+      page: 1,
+      paginationData: {},
+      pplist: [1,3,5,10,15, {text: 'All', value: -1}],
+      canGoNext: true,
+      canGoPrev: true,
+
       popoverShow: false,
       popoverX: 0,
       popoverY: 0,
 
-
-      pplist: [1,3,5,10,15, {text: 'All', value: -1}]
+      console
     }),
     computed: {
       t_itemsPerPage () { return this.itemsPerPage},
@@ -216,7 +216,6 @@
         let tgt = evt.target.closest('button');
 
         this.$nextTick(() => {
-          // this.popoverAttach = evt.target.closest('button')
           var rect = tgt.getBoundingClientRect();
           // console.log(rect);
           this.popoverX = rect.left;
