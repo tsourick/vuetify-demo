@@ -242,15 +242,7 @@
         if (this.deleteRows(this.selectedRows)) this.selectedRows = [];
       },
       onDeleteClick (evt, item){
-        // if (this.deleteItems(this.selectedRows)) this.selectedRows = [];
-        // console.log(item);
-        // console.log(evt);
-
-        // this.popoverShow = false
-        // this.popoverAttach = undefined
-
         let tgt = evt.target.closest('button');
-        // console.log(tgt);
 
         this.$nextTick(() => {
           // this.popoverAttach = evt.target.closest('button')
