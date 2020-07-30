@@ -159,7 +159,7 @@
   import Sorter         from './Sorter';
 
   export default {
-    name: 'MyTable',
+    name: 'Table',
 
     components:{
       ColumnSelector,

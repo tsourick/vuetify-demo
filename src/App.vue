@@ -6,7 +6,7 @@
       <v-container fluid>
         <v-row>
           <v-col>
-            <MyTable/>
+            <Table/>
           </v-col>
         </v-row>
       </v-container>
@@ -15,14 +15,14 @@
 </template>
 
 <script>
-import MyTable  from './components/Table/MyTable';
-import AppBar   from './components/AppBar';
+import Table  from './components/Table/Table';
+import AppBar from './components/AppBar';
 
 export default {
   name: 'App',
 
   components: {
-    MyTable,
+    Table,
     AppBar
   }
 };
