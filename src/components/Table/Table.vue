@@ -108,7 +108,7 @@
 </template>
 
 <script>
-  import Utils from '@/utils';
+  import Utils from '@/utils'; // direct JS import
 
   
   let headerNames = 'id,name,pos';
