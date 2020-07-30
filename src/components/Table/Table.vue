@@ -3,15 +3,7 @@
     <div class="d-flex align-center">
         <Sorter :value="firstField" :list="headerNamesAvail" @change="onFirstFieldChanged" />
 
-        <v-btn
-          id="idcBtnDel"
-         @click="onDeleteAllClick($event)" 
-         :disabled="! hasRowsSelected"
-         class=" myPagerBorder my-0 py-0 mr-2 ml-auto idcBtnDel" 
-         :class="{active: hasRowsSelected}"
-         outlined borderless
-         style="text-transform: capitalize"
-         >delete {{selectedRows.length ? `(${selectedRows.length})` : ''}}</v-btn>
+        <DeleteButton :selectedRows=selectedRows @confirmed="onDeleteAllClick" />
 
         <Pager :pplist="pplist" :pp="itemsPerPage" @ppchange="itemsPerPage = $event"
         :canGoPrev="canGoPrev" :canGoNext="canGoNext" :paginationData="paginationData"
@@ -157,6 +149,7 @@
   import ColumnSelector from './components/TableColumnSelector';
   import Pager          from './components/TablePager';
   import Sorter         from './components/TableSorter';
+  import DeleteButton   from './components/TableDeleteButton';
 
   export default {
     name: 'Table',
@@ -164,7 +157,8 @@
     components:{
       ColumnSelector,
       Pager,
-      Sorter
+      Sorter,
+      DeleteButton
     },
 
     data: () => ({
@@ -193,8 +187,7 @@
     }),
     computed: {
       t_itemsPerPage () { return this.itemsPerPage},
-      t_page () { return this.page},
-      hasRowsSelected() { return (this.selectedRows.length > 0)} 
+      t_page () { return this.page}
     },
 
     methods: {
@@ -299,13 +292,6 @@
 </script>
 
 <style>
-  #idcBtnDel.active
-  {
-    background-color: green;
-    color: white !important;
-    border: 1px solid green
-  }
-
   #theTable > .v-data-table__wrapper > table > tbody > tr
   > td:last-child button {
       opacity: 0;
