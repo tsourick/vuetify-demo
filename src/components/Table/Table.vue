@@ -64,13 +64,13 @@
     
     <v-menu
         :close-on-content-click="false"
-        :close-on-click="false"
+        :close-on-click="true"
         absolute
         z-index="9999999"
         :position-x="popoverX"
         :position-y="popoverY"
         ref="popover"
-        :value="popoverShow"
+        v-model="popoverShow"
         
         class="px-2 bg-white"
         >
