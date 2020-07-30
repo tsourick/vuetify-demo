@@ -21,7 +21,7 @@
 
 <script>
   export default {
-    name: 'Pager',
+    name: 'TablePager',
     props: ['pplist', 'pp', 'canGoPrev', 'canGoNext', 'paginationData'],
     methods: {
       onPPChange (e) {

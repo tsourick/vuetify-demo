@@ -14,7 +14,7 @@
 
 <script>
   export default {
-    name: 'Sorter',
+    name: 'TableSorter',
     props: ['value', 'list']
   }
 </script>

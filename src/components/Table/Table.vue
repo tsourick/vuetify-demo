@@ -154,9 +154,9 @@
   }
 
   
-  import ColumnSelector from './components/ColumnSelector';
-  import Pager          from './components/Pager';
-  import Sorter         from './components/Sorter';
+  import ColumnSelector from './components/TableColumnSelector';
+  import Pager          from './components/TablePager';
+  import Sorter         from './components/TableSorter';
 
   export default {
     name: 'Table',

@@ -38,7 +38,7 @@
     /* eslint-disable no-unused-vars */
     
   export default {
-    name: 'ColumnSelector',
+    name: 'TableColumnSelector',
     props: ['names', 'namesSelected'],
     computed: {
       allSelected () {
