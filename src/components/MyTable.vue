@@ -191,20 +191,6 @@
 
       pplist: [1,3,5,10,15, {text: 'All', value: -1}]
     }),
-    watch: {
-      sortField: function (v, old) {
-        console.log(v, old);        
-      }
-
-      /* $props: {
-        handler(d) {
-          // let d = this.parseData();
-          console.log(d);
-        },
-        deep: true,
-        immediate: true,
-      } */
-    },
     computed: {
       t_itemsPerPage () { return this.itemsPerPage},
       t_page () { return this.page},
@@ -223,16 +209,19 @@
       },
 
       onHeadersChanged (selected) {
-        console.log(`onHeadersChanged (${selected}) `);
+        // console.log(`onHeadersChanged (${selected}) `);
+
         this.headerNamesSelected = selected; // bulk values
         this.headerNamesAvail = this.headerNames.filter((v) => { return selected.indexOf(v) !== -1 }); // values in original order
         this.firstField = this.headerNamesAvail[0];
-console.log(`this.firstField (${this.firstField}) `);
+
+        // console.log(`this.firstField (${this.firstField}) `);
+
         this.tableHeaders = makeTableHeaders(this.headerNamesAvail)
       },
       onFirstFieldChanged (first){
         this.firstField= first
-        console.log(`onFirstFieldChanged (${first})`);
+        // console.log(`onFirstFieldChanged (${first})`);
         if (! first) return;  // skip undefined value on unselect
 
         // Re-order
@@ -252,7 +241,7 @@ console.log(`this.firstField (${this.firstField}) `);
           this.deleteItem(this.selectedRows, row); // from selection
         })
 
-        console.log('selected rows after delete:', this.selectedRows);
+        // console.log('selected rows after delete:', this.selectedRows);
 
         return true
       },
@@ -262,18 +251,18 @@ console.log(`this.firstField (${this.firstField}) `);
       onDeleteClick (evt, item){
         // if (this.deleteItems(this.selectedRows)) this.selectedRows = [];
         // console.log(item);
-        console.log(evt);
+        // console.log(evt);
 
         // this.popoverShow = false
         // this.popoverAttach = undefined
 
         let tgt = evt.target.closest('button');
-        console.log(tgt);
+        // console.log(tgt);
 
         this.$nextTick(() => {
           // this.popoverAttach = evt.target.closest('button')
           var rect = tgt.getBoundingClientRect();
-          console.log(rect);
+          // console.log(rect);
           this.popoverX = rect.left;
           this.popoverY = rect.top + rect.height;
           
@@ -291,11 +280,11 @@ console.log(`this.firstField (${this.firstField}) `);
         this.popoverItem = null;
       },
       onPopoverCancel (){
-        console.log('cancel');
+        // console.log('cancel');
         this.popoverClose()
       },
       onPopoverDelete (){
-        console.log('delete');
+        // console.log('delete');
         if (this.popoverItem) this.deleteRows([this.popoverItem])
         this.popoverClose()
       }
@@ -310,56 +299,55 @@ console.log(`this.firstField (${this.firstField}) `);
 </script>
 
 <style>
- 
-#idcBtnDel.active
-{
-  background-color: green;
-  color: white !important;
-  border: 1px solid green
-}
+  #idcBtnDel.active
+  {
+    background-color: green;
+    color: white !important;
+    border: 1px solid green
+  }
 
-#theTable > .v-data-table__wrapper > table > tbody > tr
- > td:last-child button {
-    opacity: 0;
- }
- 
-#theTable > .v-data-table__wrapper > table > tbody > tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper)
- > td:last-child button {
-    opacity: 1;
- }
+  #theTable > .v-data-table__wrapper > table > tbody > tr
+  > td:last-child button {
+      opacity: 0;
+  }
+  
+  #theTable > .v-data-table__wrapper > table > tbody > tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper)
+  > td:last-child button {
+      opacity: 1;
+  }
 
-#theTable > .v-data-table__wrapper > table > tbody > tr.v-data-table__selected
-{
-  background-color: transparent;
-}
-#theTable > .v-data-table__wrapper > table > tbody > tr:nth-of-type(even)
-{
-  background-color: rgba(0, 0, 0, .03);
-}
-#theTable > .v-data-table__wrapper > table > tbody > tr:hover
-{
-  background-color: rgba(237, 248, 239);
-  cursor: pointer;
-}
-#theTable > .v-data-table__wrapper > table > tbody > tr:hover
-> td:nth-child(2)
-{
-  font-weight: bold;
-}
+  #theTable > .v-data-table__wrapper > table > tbody > tr.v-data-table__selected
+  {
+    background-color: transparent;
+  }
+  #theTable > .v-data-table__wrapper > table > tbody > tr:nth-of-type(even)
+  {
+    background-color: rgba(0, 0, 0, .03);
+  }
+  #theTable > .v-data-table__wrapper > table > tbody > tr:hover
+  {
+    background-color: rgba(237, 248, 239);
+    cursor: pointer;
+  }
+  #theTable > .v-data-table__wrapper > table > tbody > tr:hover
+  > td:nth-child(2)
+  {
+    font-weight: bold;
+  }
 
 
-#theTable > .v-data-table__wrapper > table > tbody > tr:not(:last-child) > td:not(.v-data-table__mobile-row), .theme--light.v-data-table > .v-data-table__wrapper > table > tbody > tr:not(:last-child) > th:not(.v-data-table__mobile-row)
-{
-  border: none;
-}
+  #theTable > .v-data-table__wrapper > table > tbody > tr:not(:last-child) > td:not(.v-data-table__mobile-row), .theme--light.v-data-table > .v-data-table__wrapper > table > tbody > tr:not(:last-child) > th:not(.v-data-table__mobile-row)
+  {
+    border: none;
+  }
 
-#theTable .v-data-table-header th.sortable.active
-{
-  color: green;
-}
+  #theTable .v-data-table-header th.sortable.active
+  {
+    color: green;
+  }
 
-#theTable > .v-data-table__wrapper > table > thead > tr > th
-{
-  color: #333;
-}
+  #theTable > .v-data-table__wrapper > table > thead > tr > th
+  {
+    color: #333;
+  }
 </style>

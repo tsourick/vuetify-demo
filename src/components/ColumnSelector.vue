@@ -53,12 +53,6 @@
         return 'mdi-checkbox-blank-outline'
       },      
     },
-    watch: {
-      
-      namesSelected: function (v, old) {
-        // console.log(`v: ${v} -> old: ${old}`);
-      }
-    },
     methods: {
       getItemIndex(v) {
         return this.namesSelected.indexOf(v);
@@ -100,7 +94,4 @@
 </script>
 
 <style>
-#ddCols{
-
-}
 </style>

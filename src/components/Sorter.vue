@@ -13,10 +13,10 @@
 </template>
 
 <script>
-export default {
-  name: 'Sorter',
-  props: ['value', 'list']
-}
+  export default {
+    name: 'Sorter',
+    props: ['value', 'list']
+  }
 </script>
 
 <style>

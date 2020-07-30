@@ -57,27 +57,22 @@ export default {
 
   components: {
     MyTable,
-  },
-
-  data: () => ({
-    //
-  }),
+  }
 };
 </script>
 
-<style lang="scss">
-.myPagerBorder {
- border-radius: 0;
-}
+<style>
+  .myPagerBorder {
+  border-radius: 0;
+  }
 
-.v-text-field--outlined.v-input--dense.v-text-field--outlined > .v-input__control > .v-input__slot
-{
-  min-height: 36px;
-  height: 36px;
-}
+  .v-text-field--outlined.v-input--dense.v-text-field--outlined > .v-input__control > .v-input__slot
+  {
+    min-height: 36px;
+    height: 36px;
+  }
 
-
-.v-btn {
-  font-weight: normal;
-}
+  .v-btn {
+    font-weight: normal;
+  }
 </style>

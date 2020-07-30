@@ -23,10 +23,6 @@
   export default {
     name: 'Pager',
     props: ['pplist', 'pp', 'canGoPrev', 'canGoNext', 'paginationData'],
-    computed: {
-    },
-    watch: {
-    },
     methods: {
       onPPChange (e) {
         this.itemtext = 'qqwe'
@@ -35,25 +31,13 @@
       onNav (direction) {
         this.$emit('nav', direction)
       }
-    },
-    created (){
-      /*
-      this.pplist.forEach((v, i, a) => {
-        if (Number.isInteger(v))
-        {
-          a[i] = {text: v + ' Per Page', value: v}
-        }
-      });
-      */
     }
   }
 </script>
 
 <style>
-.v-select__selections input { display: none}
+  .v-select__selections input { display: none}
 
-.v-select.v-input--dense .v-select__selection--comma {margin: 0; margin-right: 2px}
-
-
+  .v-select.v-input--dense .v-select__selection--comma {margin: 0; margin-right: 2px}
 </style>
 
